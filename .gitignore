@@ -1,3 +1,7 @@
+# Binaries from 'go build' and 'make build'
+cli
+fielda
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
