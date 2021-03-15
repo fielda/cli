@@ -13,8 +13,9 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "fielda",
-	Short: "Work easily with Fielda from the command line.",
+	Use:     "fielda",
+	Version: "0.1",
+	Short:   "Work easily with Fielda from the command line.",
 	Long: `This is Fielda's official CLI.
 
 An API key from your user account is required to run most commands.
@@ -24,6 +25,10 @@ Contact support@fielda.com to get a key.`,
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+	// TODO: Get version from ldflags:
+	// https://www.digitalocean.com/community/tutorials/using-ldflags-to-set-version-information-for-go-applications
+	rootCmd.SetVersionTemplate("{{.Use}} version {{.Version}}\n")
+
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -37,7 +42,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cli.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.fielda.yaml)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -57,9 +62,11 @@ func initConfig() {
 			os.Exit(1)
 		}
 
-		// Search config in home directory with name ".cli" (without extension).
+		viper.SetDefault("endpoint", "https://api-next.fielda.com/v1")
+
+		// Search config in home directory with name ".fielda" (without extension).
 		viper.AddConfigPath(home)
-		viper.SetConfigName(".cli")
+		viper.SetConfigName(".fielda")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
